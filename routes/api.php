@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -22,4 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'oauth'], function () {
     Route::post('/token', [AccessTokenController::class, 'issueToken'])
         ->name('passport.token');
+});
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('/user', [UserController::class, 'create']);
+    Route::post('/login', [UserController::class, 'login']);
 });
