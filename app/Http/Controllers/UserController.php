@@ -33,7 +33,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => config('status.error.code'),
                 'message' => $validate->errors()
-            ], 422);
+            ], 400);
         }
 
         $user = User::where('email', $request->email)->first();
