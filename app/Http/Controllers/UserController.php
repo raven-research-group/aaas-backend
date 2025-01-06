@@ -36,6 +36,14 @@ class UserController extends Controller
             ], 422);
         }
 
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            return response()->json([
+                'status' => config('status.error.code'),
+                'message' => 'User already exists'
+            ], 400);
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
