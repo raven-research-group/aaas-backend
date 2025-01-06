@@ -29,5 +29,5 @@ Route::group(['prefix' => 'oauth'], function () {
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/user', [UserController::class, 'create']);
     Route::post('/login', [AuthenticateController::class, 'login']);
-    Route::post('/reset/password', [AuthenticateController::class, 'resetPassword']);
+    Route::post('/reset-password', [AuthenticateController::class, 'resetPassword']);
 });
