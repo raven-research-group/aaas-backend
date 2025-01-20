@@ -62,7 +62,7 @@ class AuthenticateController extends Controller
             ]);
         }
         return response()->json([
-            'status' => 'error',
+            'status' => config('status.error.code'),
             'message' => 'Invalid credentials',
         ]);
     }
