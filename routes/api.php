@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admins\AuthenticateController as AdminsAuthenticateController;
 use App\Http\Controllers\AuthenticateController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -31,3 +32,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/login', [AuthenticateController::class, 'login']);
     Route::post('/reset-password', [AuthenticateController::class, 'resetPassword']);
 });
+
+Route::post('/admin-signup', [AdminsAuthenticateController::class, 'register']);
+Route::post('/admin-login', [AdminsAuthenticateController::class, 'login']);
