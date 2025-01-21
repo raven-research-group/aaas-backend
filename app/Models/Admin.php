@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Admin extends Model
 {
-    use HasFactory; use HasUuids;
+    use HasFactory, HasUuids , HasApiTokens;
 
     protected $fillable = ['id','name', 'email', 'password', 'organization_id'];
 
