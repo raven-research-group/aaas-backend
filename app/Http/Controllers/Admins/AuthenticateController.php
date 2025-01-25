@@ -53,13 +53,13 @@ class AuthenticateController extends Controller
         $admin = Admin::where('email', $validatedData['email'])->first();
 
         if ($admin && Hash::check($validatedData['password'], $admin->password)) {
-            $token = $admin->createToken('AdminAccessToken')->accessToken;
+            // $token = $admin->createToken('admin_access_token')->accessToken;
             return response()->json([
                 'status' => config('status.success.code'),
                 'message' => 'Login successful',
                 'data' => [
                     'admin' => $admin,
-                    'token' => $token,
+                    // 'token' => $token,
                 ],
             ]);
         }
