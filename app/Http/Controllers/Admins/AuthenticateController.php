@@ -8,10 +8,13 @@ use App\Http\Requests\AdminSignupRequest;
 use App\Models\Admin;
 use App\Models\Organization;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use League\OAuth2\Server\AuthorizationServer;
+use Psr\Http\Message\ServerRequestInterface;
+use Nyholm\Psr7\Response;
+
+
 
 class AuthenticateController extends Controller
 {
@@ -49,39 +52,58 @@ class AuthenticateController extends Controller
 
 
 
-    public function login(AdminLoginRequest $request): JsonResponse
-    {
-        $validatedData = $request->validated();
-        $admin = Admin::where('email', $validatedData['email'])->first();
 
+    
+
+
+public function login(AdminLoginRequest $request, AuthorizationServer $server, ServerRequestInterface $psrRequest): JsonResponse
+{
+    $validatedData = $request->validated();
+    $admin = Admin::where('email', $validatedData['email'])->first();
+
+    if ($admin && Hash::check($validatedData['password'], $admin->password)) {
         $request->merge([
-            "client_secret" => "",
-            "client_id" => "",
-            "grant_type" => "password"
+            "client_secret" => $admin->client_secret,
+            "client_id" => $admin->client_id,
+            "grant_type" => "password",
+            "username" => $validatedData['email'],
+            "password" => $validatedData['password'],
+            "scope" => "",
         ]);
 
-        Log::info("Request: ".json_encode($request->all()));
+        $psrRequest = $psrRequest->withParsedBody($request->all());
 
+        try {
+            $psrResponse = new Response();
 
-        if ($admin && Hash::check($validatedData['password'], $admin->password)) {
-            $token = $admin->createToken('admin_access_token')->accessToken;
+            // Generate token
+            $response = $server->respondToAccessTokenRequest($psrRequest, $psrResponse);
+            $tokenData = json_decode((string) $response->getBody(), true);
 
-            Auth::login($admin);
-
-            $token = $admin->createToken('MyApp')->accessToken;
-
+            if (isset($tokenData['access_token'])) {
+                return response()->json([
+                    'status' => config('status.success.code'),
+                    'message' => 'Login successful',
+                    'data' => [
+                        'admin' => $admin,
+                        'token' => $tokenData['access_token'],
+                    ],
+                ]);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'status' => config('status.success.code'),
-                'message' => 'Login successful',
-                'data' => [
-                    'admin' => $admin,
-                    'token' => $token,
-                ],
-            ]);
+                'status' => config('status.error.code'),
+                'message' => 'Unable to authenticate',
+                'error' => $e->getMessage(),
+            ], 401);
         }
-        return response()->json([
-            'status' => config('status.error.code'),
-            'message' => 'Invalid credentials',
-        ]);
     }
+
+    return response()->json([
+        'status' => config('status.error.code'),
+        'message' => 'Invalid credentials',
+    ]);
+}
+
+    
 }
