@@ -42,8 +42,16 @@ Route::post('/admin-login', [AdminsAuthenticateController::class, 'login']);
 
 Route::middleware('frontend')->prefix("frontend")->group(function(){
 
-    Route::get("/", function(){
-        return response()->json(["message" => "Welcome to the API"]);
+    // login and register
+    Route::post('/admin-signup', [AdminsAuthenticateController::class, 'register']);
+    Route::post('/admin-login', [AdminsAuthenticateController::class, 'login']);
+    
+
+
+    Route::middleware('auth:admin')->group(function(){
+        Route::get("/adminTest", function(){
+            return response()->json(["message" => "Welcome to the Admin API"]);
+        });
     });
 
 });
