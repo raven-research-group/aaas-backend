@@ -15,7 +15,7 @@ class Admin extends Authenticatable
 
     protected $fillable = ['id','name', 'email', 'password', 'organization_id'];
 
-    protected $hidden = ['password', 'created_at', 'updated_at'];
+    protected $hidden = ['password', 'created_at', 'updated_at', 'client_secret', 'client_id'];
 
     protected static function boot()
     {
@@ -26,13 +26,13 @@ class Admin extends Authenticatable
             $clientRepository = app(ClientRepository::class);
 
             $client = $clientRepository->create(
-                $admin->id, // User ID for this client
-                "{$admin->name} Client", // Client Name
-                "", // Redirect URI
-                "admins", // Optional provider
-                false, // Is Personal Access Client
-                true, // Is Password Grant Client
-                true // secret
+                $admin->id, 
+                "{$admin->name} Client", 
+                "", 
+                "admins", 
+                false, 
+                true, 
+                true 
             );
 
 
