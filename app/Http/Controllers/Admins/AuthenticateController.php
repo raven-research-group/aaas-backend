@@ -54,22 +54,9 @@ class AuthenticateController extends Controller
         $validatedData = $request->validated();
         $admin = Admin::where('email', $validatedData['email'])->first();
 
-        $request->merge([
-            "client_secret" => "",
-            "client_id" => "",
-            "grant_type" => "password"
-        ]);
-
-        Log::info("Request: ".json_encode($request->all()));
-
 
         if ($admin && Hash::check($validatedData['password'], $admin->password)) {
-            $token = $admin->createToken('admin_access_token')->accessToken;
-
-            Auth::login($admin);
-
-            $token = $admin->createToken('MyApp')->accessToken;
-
+            $token = $admin->createToken('frontend')->accessToken;
             return response()->json([
                 'status' => config('status.success.code'),
                 'message' => 'Login successful',
