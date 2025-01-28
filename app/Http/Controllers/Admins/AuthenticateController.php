@@ -8,14 +8,14 @@ use App\Http\Requests\AdminSignupRequest;
 use App\Models\Admin;
 use App\Models\Organization;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use App\Traits\ApiResponseTrait;
 
 class AuthenticateController extends Controller
 {
     //
+    use ApiResponseTrait;
 
     public function register(AdminSignupRequest $request): JsonResponse
     {
@@ -35,15 +35,11 @@ class AuthenticateController extends Controller
                 'password' => bcrypt($validatedData['password']),
                 'organization_id' => $organization->id,
             ]);
-
-            return response()->json([
-                'status' => config('status.success.code'),
-                'message' => 'Signup successful',
-                'data' => [
-                    'admin' => $admin,
-                    'organization' => $organization,
-                ],
-            ]);
+            $data = [
+                'admin' => $admin,
+                'organization' => $organization,
+            ];
+            return $this->successResponse('sign up successful', $data);
         });
     }
 
@@ -57,18 +53,13 @@ class AuthenticateController extends Controller
 
         if ($admin && Hash::check($validatedData['password'], $admin->password)) {
             $token = $admin->createToken('frontend')->accessToken;
-            return response()->json([
-                'status' => config('status.success.code'),
-                'message' => 'Login successful',
-                'data' => [
-                    'admin' => $admin,
-                    'token' => $token,
-                ],
-            ]);
+
+            $data = [
+                'admin' => $admin,
+                'token' => $token,
+            ];
+            return $this->successResponse('Log in successful', $data);
         }
-        return response()->json([
-            'status' => config('status.error.code'),
-            'message' => 'Invalid credentials',
-        ]);
+        return $this->errorResponse('Invalid credentials');
     }
 }
