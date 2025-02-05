@@ -85,6 +85,7 @@ The application should now be running on `http://127.0.0.1:8053`.
 This project uses Laravel Passport for API authentication. To set up Passport, run:
 ```sh
 php artisan passport:install
+php artisan passport:keys
 ```
 This command generates access and refresh tokens required for authentication.
 
