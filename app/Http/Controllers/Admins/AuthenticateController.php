@@ -45,6 +45,10 @@ class AuthenticateController extends Controller
 
 
 
+    public function login(AdminLoginRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $admin = Admin::where('email', $validatedData['email'])->first();
 
 
         if ($admin && Hash::check($validatedData['password'], $admin->password)) {
@@ -58,12 +62,4 @@ class AuthenticateController extends Controller
         }
         return $this->errorResponse('Invalid credentials');
     }
-
-    return response()->json([
-        'status' => config('status.error.code'),
-        'message' => 'Invalid credentials',
-    ]);
-}
-
-    
 }

@@ -15,7 +15,7 @@ class Admin extends Authenticatable
 
     protected $fillable = ['id','name', 'email', 'password', 'organization_id'];
 
-    protected $hidden = ['password', 'created_at', 'updated_at', 'client_secret', 'client_id'];
+    protected $hidden = ['password', 'created_at', 'updated_at'];
 
     protected $casts = [
         'password' => 'hashed',
