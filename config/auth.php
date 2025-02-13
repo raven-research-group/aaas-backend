@@ -45,6 +45,11 @@ return [
             'driver' => 'passport',
             'provider' => 'organizations',
         ],
+
+        'member' => [
+            'driver' => 'passport',
+            'provider' => 'members',
+        ],
     ],
 
     /*
@@ -75,10 +80,10 @@ return [
             'model' => App\Models\Organization::class,
         ],
     
-        // 'members' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\Member::class,
-        // ],
+        'members' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Member::class,
+        ],
     ],
 
     /*
