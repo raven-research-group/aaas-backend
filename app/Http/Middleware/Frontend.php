@@ -16,8 +16,10 @@ class Frontend
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $tag = "[Frontend][handle]";
         $header = $request->header("X_FRONTEND_KEY");
         if($header !== env("X_FRONTEND")){
+            Log::error("$tag FRONTEND KEY MISMATCH");
             return response()->json(["message" => "Unauthorized"], 401);
         }
 
@@ -26,6 +28,7 @@ class Frontend
         $is_whitelisted = in_array($request_ip, $whitelisted);
 
         if(!$is_whitelisted){
+            Log::error("$tag FRONTEND KEY MISMATCH");
             return response()->json(["message" => "Unauthorized"], 401);
         }
 

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string("api_secret");
+            $table->json("whitelisted_ips")->nullable();
             $table->string('name')->unique();
             $table->string('primary_contact');
             $table->string('secondary_contact')->nullable();

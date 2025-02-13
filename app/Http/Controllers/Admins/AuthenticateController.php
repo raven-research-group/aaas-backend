@@ -10,15 +10,12 @@ use App\Models\Organization;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use League\OAuth2\Server\AuthorizationServer;
-use Psr\Http\Message\ServerRequestInterface;
-use Nyholm\Psr7\Response;
-
-
+use App\Traits\ApiResponseTrait;
 
 class AuthenticateController extends Controller
 {
     //
+    use ApiResponseTrait;
 
     public function register(AdminSignupRequest $request): JsonResponse
     {
@@ -38,65 +35,28 @@ class AuthenticateController extends Controller
                 'password' => bcrypt($validatedData['password']),
                 'organization_id' => $organization->id,
             ]);
-
-            return response()->json([
-                'status' => config('status.success.code'),
-                'message' => 'Signup successful',
-                'data' => [
-                    'admin' => $admin,
-                    'organization' => $organization,
-                ],
-            ]);
+            $data = [
+                'admin' => $admin,
+                'organization' => $organization,
+            ];
+            return $this->successResponse('sign up successful', $data);
         });
     }
 
 
 
 
-    
 
+        if ($admin && Hash::check($validatedData['password'], $admin->password)) {
+            $token = $admin->createToken('frontend')->accessToken;
 
-public function login(AdminLoginRequest $request, AuthorizationServer $server, ServerRequestInterface $psrRequest): JsonResponse
-{
-    $validatedData = $request->validated();
-    $admin = Admin::where('email', $validatedData['email'])->first();
-
-    if ($admin && Hash::check($validatedData['password'], $admin->password)) {
-        $request->merge([
-            "client_secret" => $admin->client_secret,
-            "client_id" => $admin->client_id,
-            "grant_type" => "password",
-            "username" => $validatedData['email'],
-            "password" => $validatedData['password'],
-            "scope" => "",
-        ]);
-
-        $psrRequest = $psrRequest->withParsedBody($request->all());
-
-        try {
-            $psrResponse = new Response();
-
-            // Generate token
-            $response = $server->respondToAccessTokenRequest($psrRequest, $psrResponse);
-            $tokenData = json_decode((string) $response->getBody(), true);
-
-            if (isset($tokenData['access_token'])) {
-                return response()->json([
-                    'status' => config('status.success.code'),
-                    'message' => 'Login successful',
-                    'data' => [
-                        'admin' => $admin,
-                        'token' => $tokenData['access_token'],
-                    ],
-                ]);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => config('status.error.code'),
-                'message' => 'Unable to authenticate',
-                'error' => $e->getMessage(),
-            ], 401);
+            $data = [
+                'admin' => $admin,
+                'token' => $token,
+            ];
+            return $this->successResponse('Log in successful', $data);
         }
+        return $this->errorResponse('Invalid credentials');
     }
 
     return response()->json([
