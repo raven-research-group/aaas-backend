@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('members', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('tag')->unique();
+            $table->string('password');
+            $table->uuid('organization');
+            $table->uuid('created_by');
             $table->timestamps();
+
+            $table->foreign('organization')->references('id')->on('organizations')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 
