@@ -12,16 +12,21 @@ class Organization extends Authenticatable
 {
     use HasFactory, HasUuids, HasApiTokens;
 
-    protected $fillable = ['id','name', 'primary_contact', 'secondary_contact', 'api_secret', 'whitelisted_ips'];
+    protected $fillable = ['id', 'name', 'primary_contact', 'secondary_contact', 'api_secret', 'whitelisted_ips'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
     protected static function booted()
     {
         static::creating(function ($organization) {
-            $organization->api_secret = Str::random(32); 
+            do {
+                $apiSecret = Str::random(32);
+            } while (Organization::where('api_secret', $apiSecret)->exists());
+
+            $organization->api_secret = $apiSecret;
         });
     }
+
 
 
     public function admins()
