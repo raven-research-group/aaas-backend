@@ -28,4 +28,9 @@ class Organization extends Authenticatable
     {
         return $this->hasMany(Admin::class);
     }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
 }
