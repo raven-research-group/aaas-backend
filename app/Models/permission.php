@@ -6,17 +6,16 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Application extends Model
+class permission extends Model
 {
-    use HasFactory , HasUuids;
+    use HasFactory, HasUuids;
 
-    protected $fillable = ['id', 'name', 'organization', 'created_by'];
+    protected $guarded = [];
+    
 
-    protected $hidden = ['created_at', 'updated_at'];
-
-    public function organization()
+    public function application()
     {
-        return $this->belongsTo(Organization::class);
+        return $this->belongsTo(Application::class);
     }
 
     public function admin()
