@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name')->unique();
-            $table->uuid('application_id');
+            $table->string('name');
+            $table->uuid('organization_id');
             $table->uuid('created_by');
-
-            $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('admins')->onDelete('cascade');
             $table->timestamps();
 
-            $table->index(['application_id', 'created_by']);
-
+            $table->foreign('created_by')->references('id')->on('admins');
+            $table->foreign('organization_id')->references('id')->on('organizations');
         });
     }
 
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('tags');
     }
 };

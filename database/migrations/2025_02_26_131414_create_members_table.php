@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('tag')->unique();
-            $table->string('password');
-            $table->uuid('organization');
+            $table->string('password')->nullable();
+            $table->uuid('organization_id');
             $table->uuid('created_by');
             $table->timestamps();
 
-            $table->foreign('organization')->references('id')->on('organizations')->onDelete('cascade');
+            $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('admins')->onDelete('cascade');
         });
     }

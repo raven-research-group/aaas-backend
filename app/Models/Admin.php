@@ -35,4 +35,9 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Permission::class);
     }
+
+    public function members() //this is to cover created_by relationship
+    {
+        return $this->hasMany(Member::class);
+    }
 }

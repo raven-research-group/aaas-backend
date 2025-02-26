@@ -38,4 +38,14 @@ class Organization extends Authenticatable
     {
         return $this->hasMany(Application::class);
     }
+
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    public function members()
+    {
+        return $this->hasMany(Member::class);
+    }
 }

@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('member_tags', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name')->unique();
-            $table->uuid('application_id');
+            $table->uuid('member_id');
+            $table->uuid('tag_id');
             $table->uuid('created_by');
-
-            $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('admins')->onDelete('cascade');
             $table->timestamps();
 
-            $table->index(['application_id', 'created_by']);
-
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('admins');
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('member_tags');
     }
 };
