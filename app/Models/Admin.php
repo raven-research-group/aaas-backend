@@ -31,5 +31,8 @@ class Admin extends Authenticatable
         return $this->hasMany(Application::class);
     }
 
-
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 }

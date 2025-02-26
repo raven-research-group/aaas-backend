@@ -23,4 +23,9 @@ class Application extends Model
     {
         return $this->belongsTo(Admin::class);
     }
+
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 }
